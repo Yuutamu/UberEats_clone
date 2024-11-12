@@ -1,4 +1,4 @@
-class Order <ApplicationRecord
+class Order < ApplicationRecord
   has_many :line_foods
 
   validates :total_price, numericality: { greater_than: 0 }
@@ -10,7 +10,7 @@ class Order <ApplicationRecord
       line_foods.each do |line_food|
         line_food.update(active: false, order: self) # MEMO: order属性を現在の Orderインスタンス（self）に設定
       end
-      self.save!
+      save!
     end
   end
 end

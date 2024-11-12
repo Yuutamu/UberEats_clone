@@ -1,0 +1,41 @@
+# require: rubocop-rails
+
+AllCops:
+  # チェック対象から除外するディレクトリ,ファイル
+  Exclude:
+    - "vendor/**/*"
+    - "db/**/*"
+    - "bin/*"
+    - "node_modules/**/*"
+    - "config/initializers/devise.rb"
+    - "config/environments/*.rb"
+    - "Gemfile"
+    - "Rakefile"
+
+  # 新ルールを有効化
+  NewCops: enable
+
+# # frozen_string_literal: true というマジックコメントのないファイルの許可
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# コンパクト記法とネスト記法の両方を許可
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# ドキュメントの無い public class を許可
+Style/Documentation:
+  Enabled: false
+
+# config/routes.rb をブロック行数のチェックから除外
+Metrics/BlockLength:
+  Exclude:
+    - "config/routes.rb"
+
+# メソッドの行数40行まで許容
+Metrics/MethodLength:
+  Max: 40
+
+# メソッドの複雑度の指標を40まで許容
+Metrics/AbcSize:
+  Max: 40

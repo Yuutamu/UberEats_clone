@@ -8,7 +8,7 @@ class LineFood < ApplicationRecord
   # MEMO: 仮注文 有効であるレコードを返す
   scope :active, -> { where(active: true) }
   # MEMO: 他の店舗のLineFoodのレコードを返す
-  scope :other_restaurant, -> (picked_restaurant_id) {where.not(restaurant_id: picked_restaurant_id) }
+  scope :other_restaurant, ->(picked_restaurant_id) { where.not(restaurant_id: picked_restaurant_id) }
 
   def total_amount
     food.price * count
