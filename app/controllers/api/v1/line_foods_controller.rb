@@ -1,6 +1,23 @@
 module Api
   module V1
     class LineFoodsController < ApplicationController
+
+      def index
+        line_foods = LineFood.active
+        if line_foods.exists?
+          render json: {
+            line_food_ids: line_foods.map { |line_food| line_food.id },
+            restaurant: line_food[0].restaurant, # 0番目であることには関係ない
+            count: line_foods.sum { |line_food| line_food[:count] },
+            amount: line_foods.sum { |line_food| line_food.total_amount },
+          }, status: :ok # 200 ok
+          else
+            # MEMO: 一つも仮注文がない場合、リクエストは成功したが返すコンテンツが無いことを明示的に示す
+            render json: {}, status: :no_content # 204 No Content
+          end
+        end
+      end
+
       def create
         # 仕様： 他店舗での商品が存在する場合は、早期リターン
         # MEMO: Linefoodモデルクラスのactive
