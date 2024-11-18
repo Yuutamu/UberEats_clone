@@ -1,6 +1,7 @@
 module Api
   module V1
     class LineFoodsController < ApplicationController
+      before_action :set_food, only: %i[create replace]
 
       def index
         line_foods = LineFood.active
@@ -33,6 +34,23 @@ module Api
         set_line_food(@ordered_food)
 
         if @line_food.save # MEMO:line_foodインスタンスの保存と保存判定を同時に行う
+          render json: {
+            line_food: @line_food
+          }, status: :created # 201 Created
+        else
+          render json: {}, status: :internal_server_error # 500 Internal Server Error
+        end
+      end
+
+      # 既に存在する仮注文を論理削除するためのもの（activeカラムを非活性化する）
+      def replase
+        LineFood.active.other_restaurant.(@ordered_food.restaurant.id).each do |line_food|
+          line_food.update_attribute(:active, false) # update_attribute は、save もする
+        end
+
+        set_line_food(@ordered_food)
+
+        if @line_food.save
           render json: {
             line_food: @line_food
           }, status: :created # 201 Created
