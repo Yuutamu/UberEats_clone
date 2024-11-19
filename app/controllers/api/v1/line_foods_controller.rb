@@ -12,21 +12,20 @@ module Api
             count: line_foods.sum { |line_food| line_food[:count] },
             amount: line_foods.sum { |line_food| line_food.total_amount },
           }, status: :ok # 200 ok
-          else
-            # MEMO: 一つも仮注文がない場合、リクエストは成功したが返すコンテンツが無いことを明示的に示す
-            render json: {}, status: :no_content # 204 No Content
-          end
+        else
+          # MEMO: 一つも仮注文がない場合、リクエストは成功したが返すコンテンツが無いことを明示的に示す
+          render json: {}, status: :no_content # 204 No Content
         end
       end
 
       def create
         # 仕様： 他店舗での商品が存在する場合は、早期リターン
-        # MEMO: Linefoodモデルクラスのactive
+        # MEMO: LineFoodモデルクラスのactive
         if LineFood.active.other_restaurant(@ordered_food.restaurant.id).exists?
-          # if Linefood.where(active: true).where.not(restaurant_id: @ordered_food.restaurant.id).exists?
+          # if LineFood.where(active: true).where.not(restaurant_id: @ordered_food.restaurant.id).exists?
           return render json: {
             # MEMO: first であることに深い意味はなく、どれを取ってきても同じなので,first
-            existing_restaurant: Linefood.other_restaurant(@ordered_food.restaurant.id).first.restaurant.name,
+            existing_restaurant: LineFood.other_restaurant(@ordered_food.restaurant.id).first.restaurant.name,
             new_restaurant: Food.find(params[:food_id]).restaurant.name
           }, status: :not_acceptable # 406 Not Acceptable
         end
@@ -43,8 +42,8 @@ module Api
       end
 
       # 既に存在する仮注文を論理削除するためのもの（activeカラムを非活性化する）
-      def replase
-        LineFood.active.other_restaurant.(@ordered_food.restaurant.id).each do |line_food|
+      def replace
+        LineFood.active.other_restaurant(@ordered_food.restaurant.id).each do |line_food|
           line_food.update_attribute(:active, false) # update_attribute は、save もする
         end
 
