@@ -8,7 +8,7 @@ class Order < ApplicationRecord
     # MEMO: 例外発生時、ActiveRecord::Rollback 例外エラーを返す
     ActiveRecord::Base.transaction do
       line_foods.each do |line_food|
-        line_food.update(active: false, order: self) # MEMO: order属性を現在の Orderインスタンス（self）に設定
+        line_food.update!(active: false, order: self) # MEMO: order属性を現在の Orderインスタンス（self）に設定
       end
       save!
     end

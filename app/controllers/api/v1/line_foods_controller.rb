@@ -10,7 +10,7 @@ module Api
             line_food_ids: line_foods.map { |line_food| line_food.id },
             restaurant: line_food[0].restaurant, # 0番目であることには関係ない
             count: line_foods.sum { |line_food| line_food[:count] },
-            amount: line_foods.sum { |line_food| line_food.total_amount },
+            amount: line_foods.sum { |line_food| line_food.total_amount }
           }, status: :ok # 200 ok
         else
           # MEMO: 一つも仮注文がない場合、リクエストは成功したが返すコンテンツが無いことを明示的に示す
